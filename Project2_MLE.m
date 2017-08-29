@@ -42,7 +42,8 @@ Tw = 1/cosh((V-V3)/(2*V4));
 eqns = [ phi*(w_inf-w)/Tw == 0, gca*m_inf*(V-Vca)+ gk*w*(V-Vk) + gl*(V-Vl) == 0];
 vars = [V w];
 S = vpasolve(eqns, vars);
-[S.V S.w]
+[S.V S.w];
+disp(['For Iext = ' num2str(Iext) ', the Equilibrium point is V = ' num2str(double(S.V)) 'mV & w = ' num2str(double(S.w))])
 %%
 w1 = (-gca*m_inf*(V-Vca)-gl*(V-Vl))/(gk*(V-Vk));
 V = -83:0.1:120;
@@ -54,6 +55,10 @@ hold on;
 plot(V,100*V_nc); % V Null cline
 xlim([-84 120])
 ylim([0 100])
+title('Null Clines and Quiver Plot')
+xlabel('V(mV)') % x-axis label
+ylabel('w') % y-axis label
+legend('w Null Cline','V Null Cline')
 
 figure(1)
 plot(V,w_nc); % w Null cline
@@ -61,14 +66,18 @@ hold on;
 plot(V,V_nc); % V Null cline
 xlim([-84 120])
 ylim([0 1])
-
+title('Null Clines')
+xlabel('V(mV)') % x-axis label
+ylabel('w') % y-axis label
+legend('w Null Cline','V Null Cline')
 %% Part 3
 syms V;
 J = jacobian([(1/C)*(Iext-(gca*m_inf*(V-Vca)+ gk*w*(V-Vk) + gl*(V-Vl))), phi*(w_inf-w)/Tw], [V, w]);
 V = S.V;
 w = S.w;
 Jeq = double(subs(J));
-Eign_eq = eig(Jeq)
+Eign_eq = eig(Jeq);
+disp(['For V = ' num2str(double(V)) ' & w = ' num2str(double(w)) ', the Eigenvalues are = ' num2str(Eign_eq(1)) ' & '  num2str(Eign_eq(2))])
 %%
 [V,w] = meshgrid(-84:10:120, 0:0.1:1);
 m_inf = 0.5*(1+tanh((V-V1)./V2));
@@ -89,11 +98,19 @@ Tw = 1/cosh((V-V3)/(2*V4));
 [t3,S3]=ode15s(@MLE, [0 300], [-25, 0.014]);
 figure(1)
 plot(S1(:,1), S1(:,2),'b',S2(:,1), S2(:,2),'b',S3(:,1), S3(:,2),'b');
+title('Phase Plots')
+xlabel('V(mV)') % x-axis label
+ylabel('w') % y-axis label
+%legend('w Null Cline','V Null Cline')
 figure;
 plot(t1,S1(:,1),'b');
 hold on;
 plot(t2,S2(:,1),'b');
 plot(t3,S3(:,1),'b');
+title('Transient Response')
+xlabel('t(ms)') % x-axis label
+ylabel('V(mV)') % y-axis label
+%legend(['Initial Voltage = ' num2str(0)],['Initial Voltage = ' num2str(-10)],['Initial Voltage = ' num2str(-25)])
 
 phi = 0.04;
 [t1,S1]=ode15s(@MLE, [0 300], [0  , 0.014]);
@@ -129,12 +146,16 @@ for v = -17:0.1:-10
     max_v = [max_v max(S1(:,1))];
 end
 plot(-17:0.1:-10,max_v(2:end));
+title('Threshold Plot')
+xlabel('V(mV)') % x-axis label
+ylabel('V_max (mV)') % y-axis label
 %%
 Iext = 86;
 eqns = [ phi*(w_inf-w)/Tw == 0, Iext - gca*m_inf*(V-Vca) - gk*w*(V-Vk) - gl*(V-Vl) == 0];
 vars = [V w];
 S = vpasolve(eqns, vars);
-[S.V S.w]
+[S.V S.w];
+disp(['For Iext = ' num2str(Iext) ', the Equilibrium point is V = ' num2str(double(S.V)) 'mV & w = ' num2str(double(S.w))])
 w1 = (Iext-gca*m_inf*(V-Vca)-gl*(V-Vl))/(gk*(V-Vk));
 V = -83:0.1:120;
 w_nc = double(subs(w_inf));
@@ -157,7 +178,8 @@ J = jacobian([(1/C)*(Iext-(gca*m_inf*(V-Vca)+ gk*w*(V-Vk) + gl*(V-Vl))), phi*(w_
 V = S.V;
 w = S.w;
 Jeq = double(subs(J));
-Eign_eq = eig(Jeq)
+Eign_eq = eig(Jeq);
+disp(['For V = ' num2str(double(V)) ' & w = ' num2str(double(w)) ', the Eigenvalues are = ' num2str(Eign_eq(1)) ' & '  num2str(Eign_eq(2))])
 %%
 [t1,S1]=ode15s(@MLE, [0 300], [ -60.855, 0.014]);
 [t2,S2]=ode15s(@MLE, [0 300], [ -27.952, 0.119]);
@@ -201,11 +223,13 @@ syms V w m_inf w_inf Tw;
 m_inf = 0.5*(1+tanh((V-V1)/V2));
 w_inf = 0.5*(1+tanh((V-V3)/V4));
 Tw = 1/cosh((V-V3)/(2*V4));
+
 Iext = 80;
 eqns = [ phi*(w_inf-w)/Tw == 0, Iext - gca*m_inf*(V-Vca) - gk*w*(V-Vk) - gl*(V-Vl) == 0];
 vars = [V w];
 S = vpasolve(eqns, vars);
-[S.V S.w]
+[S.V S.w];
+disp(['For Iext = ' num2str(Iext) ', the Equilibrium point is V = ' num2str(double(S.V)) 'mV & w = ' num2str(double(S.w))])
 w1 = (Iext-gca*m_inf*(V-Vca)-gl*(V-Vl))/(gk*(V-Vk));
 V = -83:0.1:120;
 w_nc = double(subs(w_inf));
@@ -216,12 +240,21 @@ hold on;
 plot(V,V_nc); % V Null cline
 xlim([-84 120])
 ylim([0 1])
+syms V;
+J = jacobian([(1/C)*(Iext-(gca*m_inf*(V-Vca)+ gk*w*(V-Vk) + gl*(V-Vl))), phi*(w_inf-w)/Tw], [V, w]);
+V = S.V;
+w = S.w;
+Jeq = double(subs(J));
+Eign_eq = eig(Jeq);
+disp(['For V = ' num2str(double(V)) ' & w = ' num2str(double(w)) ', the Eigenvalues are = ' num2str(Eign_eq(1)) ' & '  num2str(Eign_eq(2))])
+
 syms V w
 Iext = 86;
 eqns = [ phi*(w_inf-w)/Tw == 0, Iext - gca*m_inf*(V-Vca) - gk*w*(V-Vk) - gl*(V-Vl) == 0];
 vars = [V w];
 S = vpasolve(eqns, vars);
-[S.V S.w]
+[S.V S.w];
+disp(['For Iext = ' num2str(Iext) ', the Equilibrium point is V = ' num2str(double(S.V)) 'mV & w = ' num2str(double(S.w))])
 w1 = (Iext-gca*m_inf*(V-Vca)-gl*(V-Vl))/(gk*(V-Vk));
 V = -83:0.1:120;
 w_nc = double(subs(w_inf));
@@ -232,12 +265,21 @@ hold on;
 plot(V,V_nc); % V Null cline
 xlim([-84 120])
 ylim([0 1])
+syms V;
+J = jacobian([(1/C)*(Iext-(gca*m_inf*(V-Vca)+ gk*w*(V-Vk) + gl*(V-Vl))), phi*(w_inf-w)/Tw], [V, w]);
+V = S.V;
+w = S.w;
+Jeq = double(subs(J));
+Eign_eq = eig(Jeq);
+disp(['For V = ' num2str(double(V)) ' & w = ' num2str(double(w)) ', the Eigenvalues are = ' num2str(Eign_eq(1)) ' & '  num2str(Eign_eq(2))])
+
 syms V w
 Iext = 90;
 eqns = [ phi*(w_inf-w)/Tw == 0, Iext - gca*m_inf*(V-Vca) - gk*w*(V-Vk) - gl*(V-Vl) == 0];
 vars = [V w];
 S = vpasolve(eqns, vars);
-[S.V S.w]
+[S.V S.w];
+disp(['For Iext = ' num2str(Iext) ', the Equilibrium point is V = ' num2str(double(S.V)) 'mV & w = ' num2str(double(S.w))])
 w1 = (Iext-gca*m_inf*(V-Vca)-gl*(V-Vl))/(gk*(V-Vk));
 V = -83:0.1:120;
 w_nc = double(subs(w_inf));
@@ -248,7 +290,98 @@ hold on;
 plot(V,V_nc); % V Null cline
 xlim([-84 120])
 ylim([0 1])
- end
+syms V;
+J = jacobian([(1/C)*(Iext-(gca*m_inf*(V-Vca)+ gk*w*(V-Vk) + gl*(V-Vl))), phi*(w_inf-w)/Tw], [V, w]);
+V = S.V;
+w = S.w;
+Jeq = double(subs(J));
+Eign_eq = eig(Jeq);
+disp(['For V = ' num2str(double(V)) ' & w = ' num2str(double(w)) ', the Eigenvalues are = ' num2str(Eign_eq(1)) ' & '  num2str(Eign_eq(2))])
+
+%% Part 10
+gca = 4;
+gk = 8;
+gl = 2;
+Vca = 120;
+Vk = -84;
+Vl = -60;
+phi = 0.0667;
+V1 = -1.2;
+V2 = 18;
+V3 = 12;
+V4 = 17.4;
+C = 20;
+Iext = 30;
+
+syms V w m_inf w_inf Tw;
+m_inf = 0.5*(1+tanh((V-V1)/V2));
+w_inf = 0.5*(1+tanh((V-V3)/V4));
+Tw = 1/cosh((V-V3)/(2*V4));
+
+eqns = [ phi*(w_inf-w)/Tw == 0, Iext - gca*m_inf*(V-Vca) - gk*w*(V-Vk) - gl*(V-Vl) == 0];
+vars = [V w];
+A = [];
+for n = 1:20 
+  S = vpasolve(eqns, vars,'random',true); 
+  A = [A; double(S.V) double(S.w)];
+end
+B = unique(A,'rows');
+disp(['For Iext = ' num2str(Iext) ', the Equilibrium point is V = ' num2str(B(1,1)) 'mV & w = ' num2str(B(1,2))])
+syms V w;
+J = jacobian([(1/C)*(Iext-(gca*m_inf*(V-Vca)+ gk*w*(V-Vk) + gl*(V-Vl))), phi*(w_inf-w)/Tw], [V, w]);
+V = B(1,1);
+w = B(1,2);
+Jeq = double(subs(J));
+Eign_eq = eig(Jeq);
+disp(['For V = ' num2str(double(B(1,1))) ' & w = ' num2str(double(B(1,2))) ', the Eigenvalues are = ' num2str(Eign_eq(1)) ' & '  num2str(Eign_eq(2))])
+disp(['For Iext = ' num2str(Iext) ', the Equilibrium point is V = ' num2str(B(2,1)) 'mV & w = ' num2str(B(2,2))])
+syms V w;
+J = jacobian([(1/C)*(Iext-(gca*m_inf*(V-Vca)+ gk*w*(V-Vk) + gl*(V-Vl))), phi*(w_inf-w)/Tw], [V, w]);
+V = B(2,1);
+w = B(2,2);
+Jeq = double(subs(J));
+Eign_eq = eig(Jeq);
+disp(['For V = ' num2str(double(B(2,1))) ' & w = ' num2str(double(B(2,2))) ', the Eigenvalues are = ' num2str(Eign_eq(1)) ' & '  num2str(Eign_eq(2))])
+disp(['For Iext = ' num2str(Iext) ', the Equilibrium point is V = ' num2str(B(3,1)) 'mV & w = ' num2str(B(3,2))])
+syms V w;
+J = jacobian([(1/C)*(Iext-(gca*m_inf*(V-Vca)+ gk*w*(V-Vk) + gl*(V-Vl))), phi*(w_inf-w)/Tw], [V, w]);
+V = B(3,1);
+w = B(3,2);
+Jeq = double(subs(J));
+Eign_eq = eig(Jeq);
+disp(['For V = ' num2str(double(B(3,1))) ' & w = ' num2str(double(B(3,2))) ', the Eigenvalues are = ' num2str(Eign_eq(1)) ' & '  num2str(Eign_eq(2))])
+syms V w;
+w1 = (Iext-gca*m_inf*(V-Vca)-gl*(V-Vl))/(gk*(V-Vk));
+V = -83:0.1:120;
+w_nc = double(subs(w_inf));
+V_nc = double(subs(w1));
+figure;
+plot(V,w_nc); % w Null cline
+hold on;
+plot(V,V_nc); % V Null cline
+xlim([-84 120])
+ylim([0 1])
+syms V w;
+[t3,S3]=ode15s(@MLE, [2000 0], [-40.8452, 0.0020475]);
+plot(S3(:,1), S3(:,2),'b');
+[t3,S3]=ode15s(@MLE, [2000 0], [-40.8452, 0.003]);
+plot(S3(:,1), S3(:,2),'b');
+[t3,S3]=ode15s(@MLE, [2000 0], [-42.8452, 0.003]);
+plot(S3(:,1), S3(:,2),'b');
+[t3,S3]=ode15s(@MLE, [2000 0], [-42.8452, 0.001]);
+plot(S3(:,1), S3(:,2),'b');
+
+% [t3,S3]=ode15s(@MLE, [2000 0], [-19.6, 0.025]);
+% plot(S3(:,1), S3(:,2),'r');
+% [t3,S3]=ode15s(@MLE, [2000 0], [-19.5, 0.025]);
+% plot(S3(:,1), S3(:,2),'r');
+% [t3,S3]=ode15s(@MLE, [2000 0], [-19.5, 0.026]);
+% plot(S3(:,1), S3(:,2),'r');
+% [t3,S3]=ode15s(@MLE, [0 2000], [-19.62, 0.0255]);
+% plot(S3(:,1), S3(:,2),'r');
+
+
+  end
 
 function dS = MLE(t,S)
 global gca;
@@ -271,7 +404,7 @@ V=S(1);
 w=S(2);
 m_inf = 0.5*(1+tanh((V-V1)/V2));
 w_inf = 0.5*(1+tanh((V-V3)/V4));
-Tw = 1/cosh((V-V3)/V4);
+Tw = 1/cosh((V-V3)/(2*V4));
  
 ddt_V = (Iext-(gca*m_inf*(V-Vca)+ gk*w*(V-Vk) + gl*(V-Vl)))/C;
 ddt_w = phi*(w_inf-w)/Tw;
